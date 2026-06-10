@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operation IRONCLAD — NIWC Cyber Defense Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #0f2040;
+    --navy-light: #1a3a6b;
+    --steel: #1e3a5f;
+    --teal: #00c8b4;
+    --teal-dim: #007a70;
+    --teal-dark: #003d39;
+    --amber: #f0a500;
+    --amber-dim: #7a5200;
+    --red: #e84040;
+    --red-dim: #5a1010;
+    --white: #e8edf5;
+    --muted: #7a90b0;
+    --border: rgba(0,200,180,0.18);
+    --border-bright: rgba(0,200,180,0.5);
+    --scan-line: rgba(0,200,180,0.03);
+    --font-display: 'Orbitron', monospace;
+    --font-mono: 'IBM Plex Mono', 'Share Tech Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, var(--scan-line) 2px, var(--scan-line) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: rgba(10,22,40,0.95);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+  .topbar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 960px; margin: 0 auto; padding: 0 24px;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--muted); font-size: 10px; display: block; letter-spacing: 0.08em; }
+  .status-bar { display: flex; gap: 20px; align-items: center; }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 2s ease-in-out infinite;
+    display: inline-block; margin-right: 6px;
+  }
+  .status-label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .clearance-tag {
+    display: inline-block;
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding: 4px 12px;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .hero-title .accent { color: var(--teal); }
+  .hero-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(12px, 2vw, 16px);
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+
+  .transmission-box {
+    background: rgba(0,200,180,0.04);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    padding: 20px 24px;
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .transmission-box::before {
+    content: 'INCOMING TRANSMISSION — CMDR. WELLS, NIWC PACIFIC';
+    position: absolute; top: -10px; left: 16px;
+    background: var(--navy);
+    padding: 0 8px;
+    font-size: 10px;
+    color: var(--teal);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .transmission-text {
+    color: var(--white);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .transmission-text em { color: var(--teal); font-style: normal; }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .meta-card {
+    background: rgba(15,32,64,0.8);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+  }
+  .meta-label { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+  .meta-value { font-family: var(--font-display); font-size: 14px; color: var(--teal); font-weight: 600; }
+
+  /* ── COMMANDER BRIEFING ── */
+  .section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  .section-eyebrow {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 600;
+    margin-bottom: 28px;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+
+  .commander-card {
+    display: flex;
+    gap: 28px;
+    background: rgba(15,32,64,0.6);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 32px;
+    align-items: flex-start;
+  }
+  .commander-avatar {
+    flex-shrink: 0;
+    width: 80px; height: 80px;
+    border: 2px solid var(--teal);
+    background: var(--steel);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .avatar-rank { font-family: var(--font-display); font-size: 9px; color: var(--teal); letter-spacing: 0.1em; }
+  .avatar-icon { font-size: 28px; }
+  .avatar-name { font-size: 9px; color: var(--muted); letter-spacing: 0.08em; text-align: center; }
+  .dialogue-bubble {
+    background: rgba(0,200,180,0.05);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    padding: 16px 20px;
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--white);
+    position: relative;
+  }
+  .dialogue-bubble::before {
+    content: '';
+    position: absolute; left: -9px; top: 20px;
+    width: 0; height: 0;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-right: 8px solid var(--teal-dim);
+  }
+
+  /* ── MISSION TIMELINE ── */
+  .mission-timeline { position: relative; }
+  .mission-timeline::before {
+    content: '';
+    position: absolute;
+    left: 28px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--teal), var(--teal-dim), transparent);
+  }
+
+  .mission-card {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .mission-node {
+    width: 56px; height: 56px;
+    border: 2px solid var(--teal);
+    background: var(--navy-mid);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    flex-shrink: 0;
+    font-family: var(--font-display);
+    position: relative;
+    z-index: 1;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .mission-node .quest-num { font-size: 9px; color: var(--teal); letter-spacing: 0.1em; }
+  .mission-node .quest-icon { font-size: 20px; }
+
+  .mission-card:hover .mission-node { background: var(--teal-dark); border-color: var(--teal); }
+  .mission-card.locked .mission-node { border-color: var(--muted); opacity: 0.5; }
+
+  .mission-body {
+    background: rgba(15,32,64,0.7);
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+  .mission-card:hover .mission-body { border-color: var(--border-bright); }
+  .mission-card.locked .mission-body { opacity: 0.5; }
+
+  .mission-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .mission-name {
+    font-family: var(--font-display);
+    font-size: 14px; font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+  .mission-time { font-size: 10px; color: var(--amber); letter-spacing: 0.1em; text-transform: uppercase; }
+  .mission-desc { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.7; }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .skill-tag {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid var(--teal-dim);
+    color: var(--teal);
+    background: rgba(0,200,180,0.06);
+  }
+  .skill-tag.red { border-color: rgba(232,64,64,0.4); color: var(--red); background: rgba(232,64,64,0.06); }
+  .skill-tag.amber { border-color: rgba(240,165,0,0.4); color: var(--amber); background: rgba(240,165,0,0.06); }
+
+  /* ── EXPANDABLE MISSION DETAIL ── */
+  .mission-detail {
+    grid-column: 2;
+    display: none;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-top: none;
+    padding: 20px;
+    margin-top: -24px;
+    margin-bottom: 24px;
+  }
+  .mission-detail.open { display: block; }
+
+  .detail-section { margin-bottom: 18px; }
+  .detail-label { font-size: 10px; color: var(--teal); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+  .detail-text { font-size: 12px; color: var(--muted); line-height: 1.8; }
+
+  .step-list { list-style: none; }
+  .step-list li {
+    font-size: 12px; color: var(--white);
+    padding: 6px 0 6px 20px;
+    border-bottom: 1px solid rgba(0,200,180,0.08);
+    position: relative;
+  }
+  .step-list li::before {
+    content: '›';
+    position: absolute; left: 0;
+    color: var(--teal);
+    font-size: 16px; line-height: 1.1;
+  }
+  .step-list li:last-child { border-bottom: none; }
+
+  .hint-box {
+    background: rgba(240,165,0,0.06);
+    border: 1px solid rgba(240,165,0,0.2);
+    border-left: 3px solid var(--amber);
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--white);
+    line-height: 1.7;
+  }
+  .hint-box strong { color: var(--amber); font-weight: 500; }
+
+  .tool-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tool-pill {
+    background: rgba(30,58,95,0.8);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    font-size: 11px;
+    color: var(--teal);
+    font-family: var(--font-mono);
+  }
+
+  /* ── SCORING ── */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .score-card {
+    background: rgba(15,32,64,0.8);
+    border: 1px solid var(--border);
+    padding: 16px;
+    text-align: center;
+  }
+  .score-points {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-name { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  .score-desc { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  /* ── TERMINAL BLOCK ── */
+  .terminal {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--teal-dim);
+    padding: 0;
+    margin: 20px 0;
+    font-family: var(--font-mono);
+  }
+  .terminal-bar {
+    background: rgba(0,200,180,0.08);
+    padding: 6px 14px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+  }
+  .terminal-body { padding: 14px 16px; font-size: 12px; line-height: 2; }
+  .terminal-body .cmd { color: var(--teal); }
+  .terminal-body .cmt { color: var(--muted); }
+  .terminal-body .out { color: var(--amber); }
+  .terminal-body .err { color: var(--red); }
+
+  /* ── SETUP GUIDE ── */
+  .setup-steps { counter-reset: steps; }
+  .setup-step {
+    counter-increment: steps;
+    display: flex; gap: 20px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: var(--navy-mid);
+    border: 1px solid var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--teal);
+  }
+  .step-content h4 { font-size: 13px; color: var(--white); margin-bottom: 4px; font-weight: 500; }
+  .step-content p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .step-content code {
+    background: rgba(0,200,180,0.1);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    font-size: 11px;
+    color: var(--teal);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo { font-family: var(--font-display); font-size: 12px; color: var(--muted); letter-spacing: 0.15em; margin-bottom: 8px; }
+  .footer-text { font-size: 11px; color: rgba(122,144,176,0.5); }
+
+  /* ── UTILITY ── */
+  .teal { color: var(--teal); }
+  .amber { color: var(--amber); }
+  .red { color: var(--red); }
+  .muted { color: var(--muted); }
+  code { font-family: var(--font-mono); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  .nav-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 32px; overflow-x: auto; }
+  .nav-tab {
+    padding: 10px 18px;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--white); }
+  .nav-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  @media (max-width: 600px) {
+    .commander-card { flex-direction: column; }
+    .mission-timeline::before { left: 26px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">
+      NIWC Pacific — Cyber Defense Division
+      <span>Operation IRONCLAD Training Simulator</span>
+    </div>
+    <div class="status-bar">
+      <div><span class="status-dot"></span><span class="status-label">System Online</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="wrapper">
+  <section class="hero">
+    <div class="clearance-tag">⬛ Unclassified Training Scenario</div>
+    <h1 class="hero-title">Operation<br><span class="accent">IRONCLAD</span></h1>
+    <p class="hero-subtitle">Navy Cyber Defense Mission Simulator</p>
+
+    <div class="transmission-box">
+      <p class="transmission-text">
+        Analyst, your access credentials have been verified. You are being assigned to the
+        <em>USS Meridian</em> cyber response team. Our shipboard command system has experienced
+        an anomalous intrusion event. You have <em>60 minutes</em> to investigate, neutralize
+        the threat, and restore operational security before the vessel departs port.
+        <br><br>
+        Mission briefing below. Good luck — the fleet is counting on you.
+      </p>
+    </div>
+
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="meta-label">Mission Time</div>
+        <div class="meta-value">~60 MIN</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Clearance Level</div>
+        <div class="meta-value">TRAINEE</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Active Quests</div>
+        <div class="meta-value">4 OPS</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Max Score</div>
+        <div class="meta-value">400 PTS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAVIGATION -->
+  <section class="section" id="missions">
+    <div class="section-eyebrow">Mission Control</div>
+    <h2 class="section-title">Active Operations</h2>
+
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="switchTab('briefing')">Story Briefing</div>
+      <div class="nav-tab" onclick="switchTab('missions')">Mission Dossiers</div>
+      <div class="nav-tab" onclick="switchTab('setup')">VM Setup</div>
+      <div class="nav-tab" onclick="switchTab('scoring')">Scoring</div>
+      <div class="nav-tab" onclick="switchTab('resources')">Field Resources</div>
+    </div>
+
+    <!-- ── TAB: BRIEFING ── -->
+    <div id="tab-briefing" class="tab-content active">
+      <div class="commander-card">
+        <div class="commander-avatar">
+          <div class="avatar-rank">CMDR</div>
+          <div class="avatar-icon">🎖️</div>
+          <div class="avatar-name">A. Wells<br>NIWC PAC</div>
+        </div>
+        <div class="dialogue-bubble">
+          Analyst. I'll keep this brief. At 0300 this morning, automated sensors on the
+          <em class="teal">USS Meridian</em> flagged unusual activity on the shipboard command network.
+          Someone — or something — got in. We don't know what they touched or what they left behind.
+          <br><br>
+          Your job is to go through this system like you own it. Check every user account.
+          Sniff the traffic. Dig through the logs. Harden whatever's been left open.
+          <br><br>
+          We have one hour before this ship has to be operationally ready. Any vulnerability
+          you don't find — the adversary might. <em class="amber">Don't leave anything on the table.</em>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Your Role</div>
+        <div class="detail-text">
+          You are a <strong style="color:var(--teal)">Cyber Warfare Technician (CWT)</strong> assigned to
+          NIWC Pacific's rapid response team. The USS Meridian is a fictional training vessel.
+          The Linux system you'll be working inside is the ship's simulated command server.
+          Every vulnerability is real — every fix you apply matters.
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="detail-section">
+        <div class="detail-label">What You'll Learn</div>
+        <ul class="step-list">
+          <li>Linux user and permission management — the foundation of system security</li>
+          <li>Network traffic analysis using Scapy and Wireshark</li>
+          <li>Digital forensics: reading system logs, finding attacker traces</li>
+          <li>System hardening: firewall rules, service auditing, package updates</li>
+        </ul>
+      </div>
+
+      <div class="hint-box">
+        <strong>For the curious:</strong> This simulator was built in the spirit of CyberPatriot,
+        the national cybersecurity competition sponsored by the Air Force Association.
+        If you want to continue building these skills, ask your instructor about CyberPatriot,
+        CCDC, or internship programs like NREIP (Naval Research Enterprise Internship Program).
+      </div>
+    </div>
+
+    <!-- ── TAB: MISSIONS ── -->
+    <div id="tab-missions" class="tab-content">
+      <div class="mission-timeline">
+
+        <!-- QUEST 1 -->
+        <div class="mission-card" onclick="toggleMission('q1')">
+          <div class="mission-node">
+            <div class="quest-num">OP-01</div>
+            <div class="quest-icon">👤</div>
+          </div>
+          <div class="mission-body">
+            <div class="mission-header">
+              <div class="mission-name">Ghost in the Roster</div>
+              <div class="mission-time">⏱ 10–15 min</div>
+            </div>
+            <div class="mission-desc">
+              Unknown accounts have appeared on the ship's command server.
+              Identify and eliminate unauthorized access before someone uses it.
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">User Management</span>
+              <span class="skill-tag">Sudo Audit</span>
+              <span class="skill-tag amber">Permissions</span>
+              <span class="skill-tag red">Privilege Escalation</span>
+            </div>
+          </div>
+        </div>
+        <div id="detail-q1" class="mission-detail">
+          <div class="detail-section">
+            <div class="detail-label">Mission Briefing</div>
+            <div class="detail-text">
+              Our system administrator flagged three accounts that don't appear in the authorized
+              personnel manifest. One of them has sudo privileges — meaning they could do real damage.
+              Another has a world-writable home directory. Investigate all user accounts on the system
+              and restore proper access control.
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Objectives</div>
+            <ul class="step-list">
+              <li>List all user accounts on the system and cross-reference against the authorized list</li>
+              <li>Identify which accounts do not belong and remove them</li>
+              <li>Audit the sudo group — who has it that shouldn't?</li>
+              <li>Find the file with dangerous permissions and correct it</li>
+              <li>Check for accounts with empty passwords</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Authorized Crew</div>
+            <div class="detail-text">
+              The following accounts are the only valid users:
+              <code>admin</code>, <code>wells</code>, <code>reyes</code>, <code>nakamura</code>.
+              Any others should be treated as unauthorized.
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Tools</div>
+            <div class="tool-list">
+              <span class="tool-pill">cat /etc/passwd</span>
+              <span class="tool-pill">groups [user]</span>
+              <span class="tool-pill">sudo deluser</span>
+              <span class="tool-pill">sudo visudo</span>
+              <span class="tool-pill">find / -perm 777</span>
+              <span class="tool-pill">passwd -S [user]</span>
+            </div>
+          </div>
+          <div class="hint-box">
+            <strong>Hint:</strong> The <code>/etc/sudoers</code> file and the
+            <code>sudo</code> group both grant elevated privileges.
+            Check both. Also look carefully at <code>/etc/passwd</code> for accounts with UID 0 other than root.
+          </div>
+        </div>
+
+        <!-- QUEST 2 -->
+        <div class="mission-card" onclick="toggleMission('q2')">
+          <div class="mission-node">
+            <div class="quest-num">OP-02</div>
+            <div class="quest-icon">📡</div>
+          </div>
+          <div class="mission-body">
+            <div class="mission-header">
+              <div class="mission-name">Dark Signal</div>
+              <div class="mission-time">⏱ 15–20 min</div>
+            </div>
+            <div class="mission-desc">
+              Unusual traffic is leaving the ship network. Analyze the packets, identify
+              the threat, and trace what data may have been exfiltrated.
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">Scapy</span>
+              <span class="skill-tag">Wireshark</span>
+              <span class="skill-tag amber">Packet Analysis</span>
+              <span class="skill-tag red">Data Exfil Detection</span>
+            </div>
+          </div>
+        </div>
+        <div id="detail-q2" class="mission-detail">
+          <div class="detail-section">
+            <div class="detail-label">Mission Briefing</div>
+            <div class="detail-text">
+              Network sensors picked up high-volume outbound traffic at 0247 hours.
+              A packet capture file has been saved to your desktop: <code>meridian_traffic.pcap</code>.
+              A Python script using Scapy is pre-installed to help you analyze it.
+              Find the suspicious connection, identify the destination IP and port, and
+              determine what protocol was used to hide the data.
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Objectives</div>
+            <ul class="step-list">
+              <li>Open the PCAP file in Wireshark and examine the traffic visually</li>
+              <li>Run the provided Scapy analysis script to enumerate packet types</li>
+              <li>Identify a suspicious DNS query containing encoded data (DNS tunneling)</li>
+              <li>Decode the message hidden in the DNS requests using base64</li>
+              <li>Identify the source process that generated the traffic (bonus)</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Scapy Walkthrough</div>
+            <div class="terminal">
+              <div class="terminal-bar"><span>meridian_analyst.py</span><span>PYTHON 3 — SCAPY 2.5</span></div>
+              <div class="terminal-body">
+                <span class="cmd">from scapy.all import rdpcap, DNS, DNSQR</span><br>
+                <span class="cmt"># Load the capture file</span><br>
+                <span class="cmd">packets = rdpcap("meridian_traffic.pcap")</span><br>
+                <span class="cmt"># Filter for DNS queries only</span><br>
+                <span class="cmd">dns_pkts = [p for p in packets if p.haslayer(DNS)]</span><br>
+                <span class="cmd">for pkt in dns_pkts:</span><br>
+                <span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;if pkt.haslayer(DNSQR):</span><br>
+                <span class="cmd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(pkt[DNSQR].qname)</span><br>
+                <span class="out"># What do you see in the subdomains?</span>
+              </div>
+            </div>
+          </div>
+          <div class="hint-box">
+            <strong>Hint:</strong> DNS tunneling hides data inside DNS query subdomains.
+            Look for queries to domains like <code>aGVsbG8=.exfil.badsite.net</code>.
+            That subdomain might be base64. Try <code>echo "aGVsbG8=" | base64 -d</code>.
+          </div>
+        </div>
+
+        <!-- QUEST 3 -->
+        <div class="mission-card" onclick="toggleMission('q3')">
+          <div class="mission-node">
+            <div class="quest-num">OP-03</div>
+            <div class="quest-icon">🔍</div>
+          </div>
+          <div class="mission-body">
+            <div class="mission-header">
+              <div class="mission-name">Buried Evidence</div>
+              <div class="mission-time">⏱ 10–15 min</div>
+            </div>
+            <div class="mission-desc">
+              The attacker tried to cover their tracks. Dig through system logs and
+              hidden files to reconstruct what they did — and find what they left behind.
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">Log Analysis</span>
+              <span class="skill-tag">File Forensics</span>
+              <span class="skill-tag amber">Hidden Files</span>
+              <span class="skill-tag red">Cron/Backdoors</span>
+            </div>
+          </div>
+        </div>
+        <div id="detail-q3" class="mission-detail">
+          <div class="detail-section">
+            <div class="detail-label">Mission Briefing</div>
+            <div class="detail-text">
+              Forensic indicators suggest the attacker accessed the system approximately
+              18 hours ago. They deleted some files and attempted to clear bash history.
+              But logs remember more than people think. Find the attacker's entry point,
+              the files they accessed, and any persistence mechanisms they left behind.
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Objectives</div>
+            <ul class="step-list">
+              <li>Check <code>/var/log/auth.log</code> for failed and successful login attempts</li>
+              <li>Find a hidden file in a user's home directory containing stolen data</li>
+              <li>Examine <code>/var/spool/cron</code> and <code>crontab -l</code> for malicious scheduled tasks</li>
+              <li>Identify a SUID binary that shouldn't have the SUID bit set</li>
+              <li>Recover the deleted bash history from <code>/tmp</code> (attacker forgot to clean it)</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Key Log Locations</div>
+            <div class="tool-list">
+              <span class="tool-pill">/var/log/auth.log</span>
+              <span class="tool-pill">/var/log/syslog</span>
+              <span class="tool-pill">/home/*/.*history</span>
+              <span class="tool-pill">/tmp/</span>
+              <span class="tool-pill">crontab -l</span>
+              <span class="tool-pill">find / -perm -4000</span>
+            </div>
+          </div>
+          <div class="hint-box">
+            <strong>Hint:</strong> Files starting with <code>.</code> are hidden.
+            Use <code>ls -la</code> to see them. SUID binaries run with the file owner's
+            privileges — if <code>/usr/local/bin/something</code> has the SUID bit, that's suspicious.
+          </div>
+        </div>
+
+        <!-- QUEST 4 -->
+        <div class="mission-card" onclick="toggleMission('q4')">
+          <div class="mission-node">
+            <div class="quest-num">OP-04</div>
+            <div class="quest-icon">🛡️</div>
+          </div>
+          <div class="mission-body">
+            <div class="mission-header">
+              <div class="mission-name">Lock It Down</div>
+              <div class="mission-time">⏱ 10–15 min</div>
+            </div>
+            <div class="mission-desc">
+              Neutralize every remaining vulnerability before the USS Meridian goes
+              operational. Harden the firewall, kill unnecessary services, and patch the OS.
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">UFW / iptables</span>
+              <span class="skill-tag">systemd</span>
+              <span class="skill-tag amber">Service Audit</span>
+              <span class="skill-tag red">Open Ports</span>
+            </div>
+          </div>
+        </div>
+        <div id="detail-q4" class="mission-detail">
+          <div class="detail-section">
+            <div class="detail-label">Mission Briefing</div>
+            <div class="detail-text">
+              You've found the attacker. Now make sure they — or anyone else — can't get
+              back in. Enable the firewall, close ports that shouldn't be open, disable
+              unnecessary services, and apply any outstanding security updates.
+              Complete the hardening checklist before departure.
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Hardening Checklist</div>
+            <ul class="step-list">
+              <li>Enable UFW and set default deny-incoming / allow-outgoing policy</li>
+              <li>Allow only SSH (port 22) and HTTP (port 80) through the firewall</li>
+              <li>Disable and stop the <code>telnetd</code> service (plain-text protocol — unacceptable)</li>
+              <li>Disable and stop the <code>vsftpd</code> FTP service</li>
+              <li>Run <code>apt update && apt upgrade</code> to apply security patches</li>
+              <li>Verify no unnecessary ports are listening with <code>ss -tlnp</code></li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Firewall Commands</div>
+            <div class="terminal">
+              <div class="terminal-bar"><span>ufw_setup.sh</span><span>BASH</span></div>
+              <div class="terminal-body">
+                <span class="cmd">sudo ufw default deny incoming</span><br>
+                <span class="cmd">sudo ufw default allow outgoing</span><br>
+                <span class="cmd">sudo ufw allow ssh</span><br>
+                <span class="cmd">sudo ufw allow 80/tcp</span><br>
+                <span class="cmd">sudo ufw enable</span><br>
+                <span class="cmd">sudo ufw status verbose</span><br>
+                <span class="out">Status: active</span>
+              </div>
+            </div>
+          </div>
+          <div class="hint-box">
+            <strong>Hint:</strong> <code>systemctl list-units --type=service --state=running</code>
+            shows every active service. Think critically: does a shipboard command server
+            really need FTP? Telnet sends passwords in plain text. Never allow it.
+          </div>
+        </div>
+
+      </div><!-- /mission-timeline -->
+    </div><!-- /tab-missions -->
+
+    <!-- ── TAB: SETUP ── -->
+    <div id="tab-setup" class="tab-content">
+      <div class="commander-card" style="margin-bottom:32px">
+        <div class="commander-avatar">
+          <div class="avatar-rank">TECH</div>
+          <div class="avatar-icon">💻</div>
+          <div class="avatar-name">VM Setup<br>Guide</div>
+        </div>
+        <div class="dialogue-bubble">
+          Before you start, you need to boot into the mission environment.
+          Download the VM image, import it into VirtualBox or VMware, and boot it up.
+          Once you see the login prompt for the <em class="teal">USS Meridian Command Terminal</em>,
+          you're ready. <em class="amber">Credentials on your mission card.</em>
+        </div>
+      </div>
+
+      <div class="setup-steps">
+        <div class="setup-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Download VirtualBox</h4>
+            <p>Install VirtualBox (free) from virtualbox.org. It runs on Windows, macOS, and Linux.
+            VMware Workstation Player also works.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Import the VM Image</h4>
+            <p>Open VirtualBox → File → Import Appliance → Select the <code>.ova</code> file.
+            Keep the default settings. The VM is pre-configured with 2GB RAM and 2 CPU cores.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Boot and Log In</h4>
+            <p>Start the VM. At the login prompt, enter:
+            Username: <code>analyst</code> / Password: <code>ironclad2024</code>.
+            You'll land in the home directory with your mission files.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Run the Scoring Engine</h4>
+            <p>Open a terminal and run <code>sudo ./score.sh</code> at any time to check your
+            progress. It will tell you which objectives are complete and your current point total.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <h4>Take a Snapshot First</h4>
+            <p>In VirtualBox: Machine → Take Snapshot, named "Clean Start."
+            If you break something, you can restore to this point without re-importing.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <div class="hint-box">
+        <strong>Heads up:</strong> The VM is intentionally insecure. Do not connect it to
+        your host network or the internet beyond NAT. Keep it isolated in "NAT" or
+        "Host-Only" network mode in VirtualBox settings.
+      </div>
+    </div>
+
+    <!-- ── TAB: SCORING ── -->
+    <div id="tab-scoring" class="tab-content">
+      <p style="color:var(--muted); font-size:13px; margin-bottom:28px; line-height:1.8">
+        Points are awarded automatically by the scoring engine each time you run
+        <code>sudo ./score.sh</code> in the VM. The engine checks whether each
+        vulnerability has been fixed — like a live CyberPatriot score panel.
+      </p>
+
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="score-points teal">100</div>
+          <div class="score-name">OP-01</div>
+          <div class="score-desc">Ghost in the Roster</div>
+        </div>
+        <div class="score-card">
+          <div class="score-points teal">100</div>
+          <div class="score-name">OP-02</div>
+          <div class="score-desc">Dark Signal</div>
+        </div>
+        <div class="score-card">
+          <div class="score-points teal">100</div>
+          <div class="score-name">OP-03</div>
+          <div class="score-desc">Buried Evidence</div>
+        </div>
+        <div class="score-card">
+          <div class="score-points teal">100</div>
+          <div class="score-name">OP-04</div>
+          <div class="score-desc">Lock It Down</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">How Points Are Awarded</div>
+        <ul class="step-list">
+          <li>Each mission is worth 100 points, split across 4–5 specific checks</li>
+          <li>Partial credit: fixing 3 of 5 items in a mission gives 60 points</li>
+          <li>Bonus points (up to 20 extra) for identifying the attacker's decoded message in OP-02</li>
+          <li>The scoring script re-runs all checks each time — fixing something earns points immediately</li>
+          <li>Breaking a previously-fixed item will deduct those points</li>
+        </ul>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span>score.sh — sample output</span><span>BASH</span></div>
+        <div class="terminal-body">
+          <span class="teal">============================</span><br>
+          <span class="teal"> USS MERIDIAN SCORING ENGINE </span><br>
+          <span class="teal">============================</span><br>
+          <span class="cmd">OP-01 User Audit........</span> <span class="amber">3/5 checks [60 pts]</span><br>
+          <span class="cmd">OP-02 Network Analysis..</span> <span class="out">0/5 checks [0 pts]</span><br>
+          <span class="cmd">OP-03 Forensics.........</span> <span class="teal">5/5 checks [100 pts]</span><br>
+          <span class="cmd">OP-04 Hardening.........</span> <span class="amber">4/5 checks [80 pts]</span><br>
+          <span class="teal">──────────────────────────</span><br>
+          <span class="cmd">TOTAL: </span><span class="teal">240 / 400</span><br>
+          <span class="muted">Time elapsed: 38:14</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: RESOURCES ── -->
+    <div id="tab-resources" class="tab-content">
+      <div class="detail-section">
+        <div class="detail-label">Quick Reference — Linux Commands</div>
+        <div class="terminal">
+          <div class="terminal-bar"><span>cheat_sheet.txt</span><span>READ-ONLY</span></div>
+          <div class="terminal-body">
+            <span class="cmt"># Users & Groups</span><br>
+            <span class="cmd">cat /etc/passwd</span> <span class="cmt">— list all users</span><br>
+            <span class="cmd">getent group sudo</span> <span class="cmt">— who's in sudo group</span><br>
+            <span class="cmd">sudo userdel -r username</span> <span class="cmt">— remove user + home dir</span><br>
+            <span class="cmd">sudo gpasswd -d user group</span> <span class="cmt">— remove from group</span><br>
+            <br>
+            <span class="cmt"># Files & Permissions</span><br>
+            <span class="cmd">ls -la /home/</span> <span class="cmt">— list all files including hidden</span><br>
+            <span class="cmd">find / -perm -4000 2>/dev/null</span> <span class="cmt">— find SUID files</span><br>
+            <span class="cmd">chmod 755 file</span> <span class="cmt">— fix permissions</span><br>
+            <br>
+            <span class="cmt"># Network</span><br>
+            <span class="cmd">ss -tlnp</span> <span class="cmt">— listening ports + processes</span><br>
+            <span class="cmd">wireshark &</span> <span class="cmt">— open Wireshark GUI</span><br>
+            <span class="cmd">python3 analyze.py</span> <span class="cmt">— run Scapy analysis</span><br>
+            <br>
+            <span class="cmt"># Services</span><br>
+            <span class="cmd">systemctl list-units --type=service</span><br>
+            <span class="cmd">sudo systemctl disable --now telnetd</span><br>
+            <span class="cmd">sudo ufw status verbose</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="detail-section">
+        <div class="detail-label">Want to Go Further?</div>
+        <ul class="step-list">
+          <li><strong style="color:var(--white)">CyberPatriot</strong> — National youth cybersecurity competition (uscyberpatriot.org)</li>
+          <li><strong style="color:var(--white)">NREIP</strong> — Naval Research Enterprise Internship Program for college students</li>
+          <li><strong style="color:var(--white)">CCDC</strong> — Collegiate Cyber Defense Competition</li>
+          <li><strong style="color:var(--white)">TryHackMe / PicoCTF</strong> — Free platforms to keep learning</li>
+          <li><strong style="color:var(--white)">CompTIA Security+</strong> — Industry-recognized entry cert aligned with DoD requirements</li>
+          <li><strong style="color:var(--white)">SANS Cyber Aces</strong> — Free cybersecurity fundamentals curriculum</li>
+        </ul>
+      </div>
+
+      <div class="hint-box" style="border-left-color:var(--teal); background:rgba(0,200,180,0.05)">
+        <strong style="color:var(--teal)">Navy Cyber Career Note:</strong>
+        Cryptologic Technician Networks (CTN) and Cyber Warfare Engineer (CWE) are two career
+        paths in the Navy that directly use these skills. NIWC Pacific offers internship
+        and career opportunities for students graduating from community college and 4-year programs.
+        Ask your instructor for more information about the NREIP and Pathways programs.
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrapper">
+    <div class="footer-logo">NIWC Pacific — Operation IRONCLAD — Training Simulator v1.0</div>
+    <div class="footer-text">This is an unclassified educational training scenario. All systems, characters, and events are fictional and for instructional purposes only.</div>
+  </div>
+</footer>
+
+<script>
+function switchTab(name) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function toggleMission(id) {
+  const el = document.getElementById('detail-' + id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.mission-detail').forEach(d => d.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>
